@@ -25,7 +25,7 @@ public class AESUtils {
      */
     private static final String KEY_ALGORITHM = "AES";
     /**
-     *  AES加解密规格算法
+     *  AES加解密规格算法（算法/工作模式/填充方式）
      */
     private static final String CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
 

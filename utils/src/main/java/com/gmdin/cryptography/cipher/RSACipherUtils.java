@@ -24,6 +24,11 @@ public class RSACipherUtils {
      */
     private static final String KEY_ALGORITHM = "RSA";
 
+    /**
+     *  RSA加解密规格算法（算法/工作模式/填充方式）
+     */
+    private static final String CIPHER_ALGORITHM = "RSA/ECB/PKCS1Padding";
+
     public static final String PRIVATE_KEY = "privateKey";
     public static final String PUBLIC_KEY = "publicKey";
 
@@ -62,7 +67,7 @@ public class RSACipherUtils {
             KeySpec keySpec = new X509EncodedKeySpec(publicKey);
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
             PublicKey rsaPublicKey = keyFactory.generatePublic(keySpec);
-            return BaseCipher.encrypt(rsaPublicKey, data, KEY_ALGORITHM);
+            return BaseCipher.encrypt(rsaPublicKey, data, CIPHER_ALGORITHM);
         }catch (Exception e){
             log.error(ERROR_MSG_TEMPLATE, "encryptByPublicKey", e);
         }
@@ -80,7 +85,7 @@ public class RSACipherUtils {
             KeySpec keySpec = new PKCS8EncodedKeySpec(privateKey);
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
             PrivateKey rsaPrivateKey = keyFactory.generatePrivate(keySpec);
-            return BaseCipher.decrypt(rsaPrivateKey, data, KEY_ALGORITHM);
+            return BaseCipher.decrypt(rsaPrivateKey, data, CIPHER_ALGORITHM);
         }catch (Exception e){
             log.error(ERROR_MSG_TEMPLATE, "decryptByPrivateKey", e);
         }
