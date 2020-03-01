@@ -3,11 +3,9 @@ package com.gmdin.cryptography.cipher;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.crypto.Cipher;
 import java.security.*;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Map;
@@ -21,6 +19,9 @@ import java.util.Objects;
 @Slf4j
 public class RSACipherUtils {
 
+    /**
+     * 算法名称
+     */
     private static final String KEY_ALGORITHM = "RSA";
 
     public static final String PRIVATE_KEY = "privateKey";
