@@ -114,7 +114,28 @@ public class KeyUtils {
             //一定要指定SHA1PRNG算法，否则windows和Linux会存在不兼容
             SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
             secureRandom.setSeed(seed);
-            kg.init(128, secureRandom);
+            kg.init(secureRandom);
+            return new SecretKeySpec(kg.generateKey().getEncoded(), algorithm);
+        }catch (Exception e){
+            log.error(ERROR_MSG_TEMPLATE, "buildSecretKeyFromSeed",  e);
+        }
+        return null;
+    }
+
+    /**
+     * 从seed构建SecretKey
+     * @param seed
+     * @param keyLength
+     * @param algorithm
+     * @return
+     */
+    public static SecretKeySpec buildSecretKeyFromSeed(final byte[] seed, final int keyLength, final String algorithm){
+        try {
+            KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+            //一定要指定SHA1PRNG算法，否则windows和Linux会存在不兼容
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(seed);
+            kg.init(keyLength, secureRandom);
             return new SecretKeySpec(kg.generateKey().getEncoded(), algorithm);
         }catch (Exception e){
             log.error(ERROR_MSG_TEMPLATE, "buildSecretKeyFromSeed",  e);

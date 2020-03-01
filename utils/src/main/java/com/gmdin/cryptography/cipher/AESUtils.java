@@ -154,7 +154,7 @@ public class AESUtils {
      * @return
      */
     private static SecretKeySpec buildSecretKeyFromSeed(final byte[] seed ){
-        return KeyUtils.buildSecretKeyFromSeed(seed, KEY_ALGORITHM);
+        return KeyUtils.buildSecretKeyFromSeed(seed, 128, KEY_ALGORITHM);
     }
 
 }
