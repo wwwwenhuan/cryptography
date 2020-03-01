@@ -1,10 +1,11 @@
 package com.gmdin.cryptography.cipher;
 
-import com.sun.javafx.scene.traversal.Algorithm;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.Cipher;
 import java.security.Key;
+import java.util.Base64;
+import java.util.Objects;
 
 /**
  * Base Cipher class
@@ -45,6 +46,32 @@ public class BaseCipher {
      */
     public static byte[] decrypt(Key key, byte[] data, String algorithm){
         return doFinal(key,data, Cipher.DECRYPT_MODE, algorithm);
+    }
+
+    /**
+     * 加密字符串
+     * @param key
+     * @param data
+     * @param algorithm
+     * @return
+     */
+    public static String encryptString(Key key, String data, String algorithm){
+        return Base64.getUrlEncoder().encodeToString(encrypt(key, data.getBytes(), algorithm));
+    }
+
+    /**
+     * 解密字符串
+     * @param key
+     * @param data
+     * @param algorithm
+     * @return
+     */
+    public static String decryptString(Key key, String data,  String algorithm){
+        byte[] content = decrypt(key, Base64.getUrlDecoder().decode(data), algorithm);
+        if(Objects.nonNull(content)){
+            return new String(content);
+        }
+        return null;
     }
 
 }

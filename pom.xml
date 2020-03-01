@@ -21,6 +21,7 @@
         <logback.version>1.2.3</logback.version>
         <junit.version>4.12</junit.version>
         <guava.version>28.0-jre</guava.version>
+        <commons.codec.version>1.13</commons.codec.version>
     </properties>
 
     <dependencyManagement>
@@ -47,8 +48,11 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-
-
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons.codec.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -64,6 +68,10 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
     </dependencies>
 

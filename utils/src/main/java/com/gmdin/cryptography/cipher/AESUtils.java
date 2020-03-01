@@ -1,12 +1,11 @@
 package com.gmdin.cryptography.cipher;
 
+import com.gmdin.cryptography.KeyUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.Objects;
 
 /**
  * AES cipher utils
@@ -62,7 +61,7 @@ public class AESUtils {
      * @return
      */
     public static String encryptStringBySeed(String seed, String data){
-        return Base64.getUrlEncoder().encodeToString(encryptBySeed(seed.getBytes(), data.getBytes()));
+        return BaseCipher.encryptString(buildSecretKeyFromSeed(seed.getBytes()), data, CIPHER_ALGORITHM);
     }
 
     /**
@@ -72,11 +71,7 @@ public class AESUtils {
      * @return
      */
     public static String decryptStringBySeed(String seed, String data){
-        byte[] content = decryptBySeed(seed.getBytes(), Base64.getUrlDecoder().decode(data));
-        if(Objects.nonNull(content)){
-            return new String(content);
-        }
-        return null;
+        return BaseCipher.decryptString(buildSecretKeyFromSeed(seed.getBytes()), data, CIPHER_ALGORITHM);
     }
 
     /**
@@ -106,7 +101,7 @@ public class AESUtils {
      * @return
      */
     public static String encryptString(String key, String data){
-        return Base64.getUrlEncoder().encodeToString(encrypt(Base64.getUrlDecoder().decode(key), data.getBytes()));
+        return BaseCipher.encryptString(buildSecretKeyFromBase64(key), data, CIPHER_ALGORITHM);
     }
 
     /**
@@ -116,11 +111,7 @@ public class AESUtils {
      * @return
      */
     public static String decryptString(String key, String data){
-        byte[] content = decrypt(Base64.getUrlDecoder().decode(key), Base64.getUrlDecoder().decode(data));
-        if(Objects.nonNull(content)){
-            return new String(content);
-        }
-        return null;
+        return BaseCipher.decryptString(buildSecretKeyFromBase64(key), data, CIPHER_ALGORITHM);
     }
 
     /**
@@ -133,7 +124,7 @@ public class AESUtils {
             kg.init(128);
             return Base64.getUrlEncoder().encodeToString(kg.generateKey().getEncoded());
         }catch (Exception e){
-            log.error(ERROR_MSG_TEMPLATE, "generateKeyToString", e);
+            log.error(ERROR_MSG_TEMPLATE, "generateStringKey", e);
         }
         return null;
     }
@@ -145,12 +136,16 @@ public class AESUtils {
      * @return
      */
     private static SecretKeySpec buildSecretKey(final byte[] key ){
-        try {
-            return new SecretKeySpec(key, KEY_ALGORITHM);
-        }catch (Exception e){
-            log.error(ERROR_MSG_TEMPLATE, "buildSecretKey",  e);
-        }
-        return null;
+        return KeyUtils.buildSecretKey(key, KEY_ALGORITHM);
+    }
+
+    /**
+     * 从Base64字符串构建SecretKey
+     * @param key
+     * @return
+     */
+    private static SecretKeySpec buildSecretKeyFromBase64(final String key){
+        return KeyUtils.buildSecretKeyFromBase64(key, KEY_ALGORITHM);
     }
 
     /**
@@ -159,17 +154,7 @@ public class AESUtils {
      * @return
      */
     private static SecretKeySpec buildSecretKeyFromSeed(final byte[] seed ){
-        try {
-            KeyGenerator kg = KeyGenerator.getInstance(KEY_ALGORITHM);
-            //一定要指定SHA1PRNG算法，否则windows和Linux会存在不兼容
-            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-            secureRandom.setSeed(seed);
-            kg.init(128, secureRandom);
-            return new SecretKeySpec(kg.generateKey().getEncoded(), KEY_ALGORITHM);
-        }catch (Exception e){
-            log.error(ERROR_MSG_TEMPLATE, "buildSecretKeyFromSeed",  e);
-        }
-        return null;
+        return KeyUtils.buildSecretKeyFromSeed(seed, KEY_ALGORITHM);
     }
 
 }

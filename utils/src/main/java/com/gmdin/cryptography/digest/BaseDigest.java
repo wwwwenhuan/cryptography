@@ -1,8 +1,10 @@
 package com.gmdin.cryptography.digest;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Hex;
 
 import java.security.MessageDigest;
+import java.util.Objects;
 
 /**
  * @author WEN HUAN
@@ -13,7 +15,7 @@ public class BaseDigest {
 
     private static final String ERROR_MSG_TEMPLATE = "BaseDigest.{} error";
 
-    public static byte[] digest(byte[] data, String algorithm){
+    public static byte[] digest(final byte[] data, final String algorithm){
         try {
             MessageDigest digest = MessageDigest.getInstance(algorithm);
             return digest.digest(data);
@@ -23,26 +25,29 @@ public class BaseDigest {
         return null;
     }
 
-
-    /**
-     *  bytes 转16进制的字符串
-     * @param data
-     * @return
-     */
-    public static String bytesToHexString(byte[] data){
-        StringBuilder stringBuilder = new StringBuilder();
-        if (data == null || data.length <= 0) {
-            return null;
+    public static String digestString(final String data, final String algorithm){
+        byte[] bytes = digest(data.getBytes(), algorithm);
+        if(Objects.nonNull(bytes)){
+            return Hex.encodeHexString(bytes);
         }
-        for (int i = 0; i < data.length; i++) {
-            int v = data[i] & 0xFF;
-            String hv = Integer.toHexString(v);
-            if (hv.length() < 2) {
-                stringBuilder.append(0);
-            }
-            stringBuilder.append(hv);
-        }
-        return stringBuilder.toString();
+        return null;
     }
 
+    /**
+     *  生成加盐的字符串摘要：(hash(hash($data)+salt))
+     * @param data
+     * @param salt
+     * @return
+     */
+    public static String digestStringWithSalt(final String data, final String salt, final String algorithm){
+        String hashOfData = digestString(data, algorithm);
+        if(Objects.nonNull(hashOfData)){
+            if(Objects.nonNull(salt)){
+                return digestString(hashOfData + salt, algorithm);
+            }else{
+                return hashOfData;
+            }
+        }
+        return null;
+    }
 }

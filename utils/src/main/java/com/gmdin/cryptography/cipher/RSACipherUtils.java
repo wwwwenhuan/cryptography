@@ -1,15 +1,13 @@
 package com.gmdin.cryptography.cipher;
 
+import com.gmdin.cryptography.KeyUtils;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 
-import java.security.*;
-import java.security.spec.KeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.util.Base64;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Cipher based on RSA
@@ -63,15 +61,7 @@ public class RSACipherUtils {
      * @return
      */
     public static byte[] encryptByPublicKey(byte[] publicKey, byte[] data){
-        try{
-            KeySpec keySpec = new X509EncodedKeySpec(publicKey);
-            KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
-            PublicKey rsaPublicKey = keyFactory.generatePublic(keySpec);
-            return BaseCipher.encrypt(rsaPublicKey, data, CIPHER_ALGORITHM);
-        }catch (Exception e){
-            log.error(ERROR_MSG_TEMPLATE, "encryptByPublicKey", e);
-        }
-        return null;
+        return BaseCipher.encrypt(KeyUtils.buildRSAPublicKey(publicKey), data, CIPHER_ALGORITHM);
     }
 
     /**
@@ -81,15 +71,7 @@ public class RSACipherUtils {
      * @return
      */
     public static byte[] decryptByPrivateKey(byte[] privateKey, byte[] data){
-        try{
-            KeySpec keySpec = new PKCS8EncodedKeySpec(privateKey);
-            KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
-            PrivateKey rsaPrivateKey = keyFactory.generatePrivate(keySpec);
-            return BaseCipher.decrypt(rsaPrivateKey, data, CIPHER_ALGORITHM);
-        }catch (Exception e){
-            log.error(ERROR_MSG_TEMPLATE, "decryptByPrivateKey", e);
-        }
-        return null;
+        return BaseCipher.decrypt(KeyUtils.buildRSAPrivateKey(privateKey), data, CIPHER_ALGORITHM);
     }
 
     /**
@@ -99,7 +81,7 @@ public class RSACipherUtils {
      * @return
      */
     public static String encryptStringByPublicKey(String publicKey, String data){
-        return Base64.getUrlEncoder().encodeToString(encryptByPublicKey(Base64.getUrlDecoder().decode(publicKey), data.getBytes()));
+        return BaseCipher.encryptString(KeyUtils.buildRSAPublicKeyFromBase64(publicKey), data, CIPHER_ALGORITHM);
     }
 
     /**
@@ -109,11 +91,7 @@ public class RSACipherUtils {
      * @return
      */
     public static String decryptStringByPrivateKey(String privateKey, String data){
-        byte[] content = decryptByPrivateKey(Base64.getUrlDecoder().decode(privateKey), Base64.getUrlDecoder().decode(data));
-        if(Objects.nonNull(content)){
-            return new String(content);
-        }
-        return null;
+        return BaseCipher.decryptString(KeyUtils.buildRSAPrivateKeyFromBase64(privateKey), data, CIPHER_ALGORITHM);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.gmdin.cryptography.digest;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -58,7 +59,7 @@ public class HMACUtils {
     public static String encodeString(String key, String data, String algorithm){
         byte[] result = encode(key.getBytes(), data.getBytes(), algorithm);
         if(Objects.nonNull(result)){
-            return BaseDigest.bytesToHexString(result);
+            return Hex.encodeHexString(result);
         }
         return null;
     }
