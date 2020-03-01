@@ -12,7 +12,8 @@ import java.util.Objects;
  * HMAC （Hash-based Message Authentication Code）：一种带秘钥的摘要算法(结合已有的摘要算法 + 秘钥，功效类似于加盐)
  * HMAC的秘钥长度可以任意，但是最好不要小于摘要的长度；真正运算时，会将key处理成和消息分组一样的长度(B)，不够B位的尾部用0补全，超过B位的先将key取HASH，然后再补0
  *  输出长度和原有HASH算法一致
- * 主要作用：用于做消息认证码(防篡改)，可用作简单的验签
+ * 主要作用：1.消息认证码(防篡改)，可用作简单的验签；2. 用户密码的存储(HMAC哈希值 + key)
+ * 用来替代HASH 算法+ SALT，更加安全，推荐使用
  * @author WEN HUAN
  * @date 2020/3/1 1:28
  */
